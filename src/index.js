@@ -1,3 +1,8 @@
-import './styles.scss';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-console.log('Hi');
+import Greeting from './components/greeting.component.jsx';
+
+import './index.css';
+
+ReactDOM.render(<Greeting name="World" />, document.getElementById('root'));

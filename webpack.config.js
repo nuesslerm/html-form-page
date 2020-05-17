@@ -1,24 +1,36 @@
 // Webpack uses this to work with directories
 const path = require('path');
-
-// We can import plugins separately right at the start of the webpack.config.js file:
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // This is main configuration object.
 // Here you write different options and tell Webpack what to do
 module.exports = {
   // Path to your entry point. From this file Webpack will begin his work
+  // entry: { javascript: './src/index.js', html: './index.html' },
   entry: './src/index.js',
 
   // Path and filename of your result bundle.
   // Webpack will bundle all JavaScript into this file
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    // path: __dirname + '/public',
+    path: path.resolve(__dirname, 'public'),
+    // filename: '[name].bundle.js',
     filename: 'bundle.js',
+    // sourceMapFilename: '[name].[hash:8].map',
+    // chunkFilename: '[id].[hash:8].js',
   },
 
   module: {
     rules: [
+      // rule for .html files
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+          },
+        ],
+      },
       // rule for .js files
       {
         /**
@@ -26,7 +38,7 @@ module.exports = {
          * which we are going to transform. In our case it's
          * JavaScript files.
          */
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         /**
          * exclude is a regular expression that tells Webpack
          * which path should be ignored when transforming modules.
@@ -34,6 +46,7 @@ module.exports = {
          * from npm if we import them in the future.
          */
         exclude: /(node_modules)/,
+        include: [path.resolve(__dirname, 'src')],
         /**
          * use is a main rule's option.
          * Here we set the loader which is going to be applied
@@ -49,48 +62,25 @@ module.exports = {
              * to consider which ES6 features it should transform and which not.
              */
             options: {
-              presets: ['@babel/preset-env'],
+              presets: ['@babel/preset-env', '@babel/preset-react'],
             },
           },
         ],
       },
-      // rule for .sass, .scss, .css files
-      {
-        // apply rule for .sass, .scss or css files
-        test: /\.(sa|sc|c)ss$/,
-        /**
-         * Set loaders to transform files.
-         * Loaders are applying from right to left(!). bottom to top(!)
-         * The first loader will be applied after others
-         */
-        use: [
-          {
-            /**
-             * FOURTH laoder
-             * After all CSS loaders we use MiniCssExtractPlugin to bundle CSS files
-             * It gets all transformed CSS and extracts it into separate
-             * single bundled file
-             */
-            loader: MiniCssExtractPlugin.loader,
-          },
-
-          {
-            // THIRD loader resolves url() and @imports inside CSS
-            loader: 'css-loader',
-          },
-          {
-            // SECOND we apply postCSS fixes like autoprefixer and minifying
-            loader: 'postcss-loader',
-          },
-          {
-            // FIRST we transform SASS to standard CSS
-            loader: 'sass-loader',
-            options: {
-              implementation: require('sass'),
-            },
-          },
-        ],
-      },
+      // rule for .jsx files
+      // {
+      //   test: /\.jsx$/,
+      //   exclude: /(node_modules)/,
+      //   include: [path.resolve(__dirname, 'src')],
+      //   use: [
+      //     {
+      //       loader: 'babel-loader',
+      //       options: {
+      //         presets: ['@babel/preset-env', '@babel/preset-react'],
+      //       },
+      //     },
+      //   ],
+      // },
       // rule for image assets
       {
         test: /\.(png|jpe?g|gif|svg)$/,
@@ -126,9 +116,9 @@ module.exports = {
   },
 
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: 'bundle.css',
-      // now we can chain this plugin into our CSS loaders ^
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      filename: './index.html',
     }),
   ],
 
@@ -142,5 +132,8 @@ module.exports = {
   // which port will the application be loaded when starting webpack?
   devServer: {
     port: 8000,
+    // contentBase: path.resolve(__dirname, 'public'),
+    hot: true,
+    inline: true,
   },
 };
