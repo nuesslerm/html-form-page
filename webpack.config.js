@@ -19,6 +19,7 @@ module.exports = {
 
   module: {
     rules: [
+      // rule for .js files
       {
         /**
          * test is a regular expression for file extension
@@ -39,18 +40,21 @@ module.exports = {
          * to files that correspond to test regexp
          * (JavaScript files in this case)
          */
-        use: {
-          loader: 'babel-loader',
-          /**
-           * options can vary depending on loader.
-           * In this case we set default presets for Babel
-           * to consider which ES6 features it should transform and which not.
-           */
-          options: {
-            presets: ['@babel/preset-env'],
+        use: [
+          {
+            loader: 'babel-loader',
+            /**
+             * options can vary depending on loader.
+             * In this case we set default presets for Babel
+             * to consider which ES6 features it should transform and which not.
+             */
+            options: {
+              presets: ['@babel/preset-env'],
+            },
           },
-        },
+        ],
       },
+      // rule for .sass, .scss, .css files
       {
         // apply rule for .sass, .scss or css files
         test: /\.(sa|sc|c)ss$/,
@@ -82,6 +86,37 @@ module.exports = {
             loader: 'sass-loader',
             options: {
               implementation: require('sass'),
+            },
+          },
+        ],
+      },
+      // rule for image assets
+      {
+        test: /\.(png|jpe?g|gif|svg)$/,
+        use: [
+          {
+            // using file-loader for these files
+            loader: 'file-loader',
+
+            /**
+             * In options we can set different things like format
+             * and directory to save
+             */
+            options: {
+              outputPath: 'images',
+            },
+          },
+        ],
+      },
+      // rule for fonts files
+      {
+        test: /\.(woff|woff2|ttf|otf|eot)$/,
+        use: [
+          {
+            // using file-loader too
+            loader: 'file-loader',
+            options: {
+              outputPath: 'fonts',
             },
           },
         ],
