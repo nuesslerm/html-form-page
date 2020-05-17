@@ -48,6 +48,32 @@ module.exports = {
           },
         },
       },
+      {
+        // apply rule for .sass, .scss or css files
+        test: /\.(sa|sc|c)ss$/,
+        /**
+         * Set loaders to transform files.
+         * Loaders are applying from right to left(!). bottom to top(!)
+         * The first loader will be applied after others
+         */
+        use: [
+          {
+            // THIRD loader resolves url() and @imports inside CSS
+            loader: 'css-loader',
+          },
+          {
+            // SECOND we apply postCSS fixes like autoprefixer and minifying
+            loader: 'postcss-loader',
+          },
+          {
+            // FIRST we transform SASS to standard CSS
+            loader: 'sass-loader',
+            options: {
+              implementation: require('sass'),
+            },
+          },
+        ],
+      },
     ],
   },
 
