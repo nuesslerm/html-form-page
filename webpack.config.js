@@ -66,6 +66,7 @@ module.exports = {
         use: [
           {
             /**
+             * FOURTH laoder
              * After all CSS loaders we use MiniCssExtractPlugin to bundle CSS files
              * It gets all transformed CSS and extracts it into separate
              * single bundled file
@@ -138,4 +139,8 @@ module.exports = {
    * minifying and other thing so let's set mode to development
    */
   mode: 'development',
+  // which port will the application be loaded when starting webpack?
+  devServer: {
+    port: 8000,
+  },
 };
